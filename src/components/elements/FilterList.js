@@ -1,8 +1,6 @@
 import { Badge, Flex, Text } from "@mantine/core";
 
 const FilterList = ({filterList}) => {
-
-
     return (  
         <Flex align="center" wrap="wrap" gap={5}>
             <Text c="#5682B4">aktive Filter:</Text>

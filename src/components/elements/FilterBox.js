@@ -10,7 +10,7 @@ import TitleFilter from "./filter/TitleFilter";
 import FavoritFilter from "./filter/FavoritFilter";
 import { useNavigate } from "react-router-dom";
 
-const FilterBox = ({wishes, onSuccess, filterList, setFilterList, owner, user}) => {
+const FilterBox = ({wishes, token, onSuccess, filterList, setFilterList, owner}) => {
 
     const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const FilterBox = ({wishes, onSuccess, filterList, setFilterList, owner, user}) 
         }
     }, [wishes]);
 
-    const addFilter = (name, value) => {
+    const addFilter = (name, value, valueID) => {
         if (name == "Preis" || name == "Titel"){
             if(value == ""){
                 setFilterList(filterList.filter((el) => !(el.filterName == name)))
@@ -45,7 +45,7 @@ const FilterBox = ({wishes, onSuccess, filterList, setFilterList, owner, user}) 
             return
         }
         if(!filterList.some((el) => el.filterName == name && el.filterValue == value)){
-            setFilterList((prev) => [...prev, { filterName: name, filterValue: value }])
+            setFilterList((prev) => [...prev, { filterName: name, filterValue: value, filterValueID: valueID }])
             return
         }
         setFilterList(filterList.filter((el) => !(el.filterName == name && el.filterValue == value)))
@@ -53,9 +53,9 @@ const FilterBox = ({wishes, onSuccess, filterList, setFilterList, owner, user}) 
 
     return (  
         <Box w="23vw" h="90vh" bg="#D5EAF5" px="30px" py="15px" style={{ position: "sticky", top: "10vh", alignSelf: "flex-start" }}>
-            <CategoryFilter wishes={wishes} addFilter={addFilter} filterList={filterList} user={user}/>
+            <CategoryFilter wishes={wishes} addFilter={addFilter} filterList={filterList} />
             <Divider size={2} color="#5682B4"/>
-            <EventFilter wishes={wishes} addFilter={addFilter} filterList={filterList} user={user}/>
+            <EventFilter wishes={wishes} addFilter={addFilter} filterList={filterList} />
             <Divider size={2} color="#5682B4"/>
             <FavoritFilter addFilter={addFilter}/>
             <Divider size={2} color="#5682B4"/>
@@ -72,7 +72,7 @@ const FilterBox = ({wishes, onSuccess, filterList, setFilterList, owner, user}) 
                     </Popover.Target>
                     <Popover.Dropdown style={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
                                             border: "7px solid #5682B4", backgroundColor: "#FEFDE5", borderRadius: 12, padding: 20}}>
-                        <AddWish onClose={() => setOpened(false)} onSuccess={onSuccess}/>
+                        <AddWish onClose={() => setOpened(false)} onSuccess={onSuccess} token={token}/>
                     </Popover.Dropdown>
                 </Popover>
             :

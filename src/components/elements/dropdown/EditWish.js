@@ -5,25 +5,37 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from "react";
 import { useUser } from "../../../UserContext";
 
-const EditWish = ({ wish, onClose, onSuccess }) => {
+const EditWish = ({ wish, onClose, onSuccess, token }) => {
 
-    const categoryData = ["Haushalt", "Kleidung", "Kosmetik", "Lebensmittel", "Spielzeug", "Sport", "Technik", "Sonstiges"]
-    const eventData = ["Geburtstag", "Hochzeit", "Weihnachten", "Ostern", "Abschluss"]
+    const categoryData = ["Haushalt", "Kleidung", "Kosmetik", "Lebensmittel", "Reisen", "Sport", "Technik", "Sonstiges"]
+    const eventData = ["Geburtstag", "Hochzeit", "Weihnachten", "Abschluss"]
 
-    const { currentUser } = useUser();
+    const categorys = [
+        {name: "Haushalt", id: "HOME"},
+        {name: "Kleidung", id: "FASHION"},
+        {name: "Kosmetik", id: "BEAUTY"},
+        {name: "Lebensmittel", id: "FOOD"},
+        {name: "Reisen", id: "TRAVEL"},
+        {name: "Sport", id: "SPORT"},
+        {name: "Technik", id: "TECHNOLOGY"},
+        {name: "Sonstiges", id: "OTHER"}
+    ]
+    const events = [
+        {name: "Geburtstag", id: "BIRTHDAY"},
+        {name: "Hochzeit", id: "WEDDING"},
+        {name: "Weihnachten", id: "CHRISTMAS"},
+        {name: "Abschluss", id: "GRADUATION"}
+    ]
 
     const [errors, setErrors] = useState({});
 
-    const [wishCategory, setWishCategory] = useState();
-    const [wishEvent, setWishEvent] = useState();
-
     const [title, setTitle] = useState(wish.title);
-    const [link, setLink] = useState(wish.url);
+    const [link, setLink] = useState(wish.productUrl);
     const [price, setPrice] = useState(wish.price);
     const [category, setCategory] = useState("");
     const [event, setEvent] = useState("");
-    const [picture, setPicture] = useState(wish.picture);
-    const [favorit, setFavorit] = useState(wish.isFavorit);
+    const [picture, setPicture] = useState(wish.imageUrl);
+    const [favorit, setFavorit] = useState(wish.isFavorite);
 
     const validate = () => {
         const newErrors = {};
@@ -36,33 +48,18 @@ const EditWish = ({ wish, onClose, onSuccess }) => {
     }
 
     useEffect(() => {
-        if (wishCategory) setCategory(wishCategory.find((c) => c.cid == wish.fk_cid)?.cname);
-        if (wishEvent) setEvent(wishEvent.find((e) => e.eid == wish.fk_eid)?.ename);
-    }, [wishCategory, wishEvent]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("http://localhost:8000/categories")
-                const response2 = await fetch("http://localhost:8000/events")
-                if (!response.ok || !response2.ok) {
-                    throw new Error('Network response was not ok')
-                }
-                const data = await response.json()
-                const data2 = await response2.json()
-                setWishCategory(data)
-                setWishEvent(data2)
-            } catch (error) {
-                console.error(`Error fetching url:`, error)
-            }
-        }
-        fetchData()
-    }, [])
+        if (categorys) setCategory(categorys.find((c) => c.id == wish.productCategory)?.name);
+        if (events) setEvent(events.find((e) => e.id == wish.eventType)?.name);
+    }, []);
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/wishes/${id}`, {
-                method: "DELETE"
+            const response = await fetch(`http://localhost:8080/wishlist/items/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -81,21 +78,21 @@ const EditWish = ({ wish, onClose, onSuccess }) => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8000/wishes/${id}`, {
+            const response = await fetch(`http://localhost:8080/wishlist/items/${id}`, {
                 method: "PUT",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    fk_uid: currentUser, 
-                    fk_cid: wishCategory?.find((c) => c.cname == category).cid,
-                    fk_eid: wishEvent?.find((e) => e.ename == event)?.eid ?? null,      
+                    productCategory: categorys?.find((c) => c.name == category).id,
+                    eventType: events?.find((e) => e.name == event)?.id ?? null,      
                     title: title,
                     price: parseFloat(price.toString().replace(',', '.')),
-                    isFavorit: favorit,
-                    bought: wish.bought,
-                    picture: picture,
-                    url: link
+                    isFavorite: favorit,
+                    isBought: wish.isBought,
+                    imageUrl: picture,
+                    productUrl: link
                 })
             });
             if (!response.ok) {

@@ -1,7 +1,7 @@
 import { Flex, Text, Button } from "@mantine/core";
-import InputRow from "../components/elements/dropdown/InputRow";
+import InputRow from "../elements/dropdown/InputRow";
 import { useState, useEffect } from "react";
-import { useUser } from "../UserContext";
+import { useUser } from "../../UserContext";
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";

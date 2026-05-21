@@ -6,20 +6,37 @@ import { useState, useEffect } from "react";
 import FilterList from "../elements/FilterList";
 import { useUser } from "../../UserContext";
 
-const MyPresents = () => {
-
-    const { currentUser } = useUser();
+const MyPresents = ({token}) => {
 
     const [wishes, setWishes] = useState();
     const [filterList, setFilterList] = useState([]);
 
     const fetchData = async () => {
         try {
-            const response = await fetch("http://localhost:8000/wishes")
+            const params = new URLSearchParams()
+        
+            filterList?.forEach(filter => {
+                if (filter.filterName === 'Kategorie' || filter.filterName === 'Event') {
+                    params.append(filter.filterName == "Event" ? "eventType" : "category", filter.filterValueID)
+                }
+            })
+
+            const url = params.toString() 
+                ? `http://localhost:8080/wishlist/items?${params.toString()}`
+                : `http://localhost:8080/wishlist/items`
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
             if (!response.ok) {
                 throw new Error('Network response was not ok')
             }
             const data = await response.json()
+            console.log(params.toString())
             setWishes(data)
         } catch (error) {
             console.error(`Error fetching url:`, error)
@@ -27,8 +44,12 @@ const MyPresents = () => {
     }
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        if (token) {
+            fetchData()
+        }
+    }, [token, filterList])
+
+    console.log(token)
 
     return (  
         <Flex justify="space-between" h="100%">
@@ -40,9 +61,9 @@ const MyPresents = () => {
                     <SortDropDown />   
                 </Flex>
                 {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                <MyWishlist wishes={wishes} onSuccess={fetchData}/>
+                <MyWishlist wishes={wishes} onSuccess={fetchData} token={token}/>
             </Box>
-            <FilterBox wishes={wishes} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true" user={currentUser}/>
+            <FilterBox wishes={wishes} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true"/>
         </Flex>
     );
 }

@@ -8,7 +8,7 @@ const FavoritFilter = ({addFilter}) => {
             </Text>
             <Flex justify="center">
                 <Checkbox
-                    onChange={() => addFilter(null, "Nur Favoriten anzeigen")}
+                    onChange={() => addFilter(null, "Nur Favoriten anzeigen", "FAVORITE")}
                     color="#5682B4"
                     c="#5682B4"
                     label="Nur Favoriten anzeigen"

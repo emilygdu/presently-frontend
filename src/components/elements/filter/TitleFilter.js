@@ -1,7 +1,7 @@
 import { Flex, Text, TextInput } from "@mantine/core";
 import SearchIcon from '@mui/icons-material/Search';
 
-const TitleFilter = ({addFilter, filterList}) => {
+const TitleFilter = ({addFilter}) => {
     return (  
         <Flex direction="column" mb={20}>
             <Text c="#5682B4" fz={17} fw={700} mb={10} style={{cursor: "default"}}>

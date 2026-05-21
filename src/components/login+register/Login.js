@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useForm } from '@mantine/form';
 import { useUser } from "../../UserContext";
 
-const Login = () => {
+const Login = ({setToken}) => {
 
     const navigate = useNavigate()
 
@@ -16,40 +16,42 @@ const Login = () => {
 
     const form = useForm({
         initialValues: {
-            email: "",
+            username: "",
             password: "",
         },
         validate: {
-            email: (value) => value.trim().length === 0 ? 'E-Mail ist erforderlich' : null,
+            username: (value) => value.trim().length === 0 ? 'E-Mail ist erforderlich' : null,
             password: (value) => value.trim().length === 0 ? 'Passwort ist erforderlich' : null,
         }
     })
 
-    //erhält Liste mit UserDaten aus der data.json
-    useEffect(() => {
-        fetch('http://localhost:8000/users') 
+    //Funktionalität, die bei Versuch des einloggens ausgeführt wird
+    function loginFunction (values) {
+        fetch('http://localhost:8080/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: values.username,
+                password: values.password,
+            }),
+        })
         .then(response => {
             if (!response.ok) {
-            throw new Error('Network response was not ok')
+                throw new Error('Network response was not ok')
             }
             return response.json()
         })
-        .then(data => setUserData(data))
-        .catch(error => console.error('Error fetching data:', error))
-    }, [])
-
-    //Funktionalität, die bei Versuch des einloggens ausgeführt wird
-    function loginFunction (values) {
-        const foundUser = userData.find((user) => user.email === values.email && user.password === values.password)
-
-        if (foundUser) {
-            setCurrentUser(foundUser.id)
-            navigate(`/meineWuensche`)    
+        .then(data => {
+            setToken(data.token)
+            navigate('/meineWuensche')
             setNoUser(false)
-        } 
-        else {
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error)
             setNoUser(true)
-        }
+        })
     }
 
     return (
@@ -71,8 +73,8 @@ const Login = () => {
                 }
                 <form onSubmit={(form.onSubmit(loginFunction))}>
                     <Flex w="25vw" justify="space-between" my={20}>
-                        <Text fz={20} c="#5682B4">E-Mail:</Text>
-                        <TextInput type="email" w="13vw" {...form.getInputProps("email")}/>
+                        <Text fz={20} c="#5682B4">Benutzername:</Text>
+                        <TextInput w="13vw" {...form.getInputProps("username")}/>
                     </Flex>
                     <Flex w="25vw" justify="space-between" my={20}>
                         <Text fz={20} c="#5682B4">Passwort:</Text>

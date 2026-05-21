@@ -1,19 +1,13 @@
 import { Flex, Grid, Text } from "@mantine/core";
 import MyWishBox from "./MyWishBox";
-import { useUser } from "../../UserContext";
 
-const MyWishlist = ({wishes, onSuccess }) => {
-
-    const { currentUser } = useUser();
-
-    const myWishes = wishes?.filter((wish) => wish.fk_uid == currentUser);
-
+const MyWishlist = ({wishes, onSuccess, token}) => {
     return (  
         <Grid mt={10}>
-            {myWishes?.length > 0 ?
-                myWishes.map((wish) => (
+            {wishes?.length > 0 ?
+                wishes.map((wish) => (
                     <Grid.Col span={3} key={wish.id}>
-                        <MyWishBox wish={wish} onSuccess={onSuccess} owner="true"/>
+                        <MyWishBox wish={wish} onSuccess={onSuccess} owner="true" token={token}/>
                     </Grid.Col>
                 ))
             :

@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
 import { useForm } from '@mantine/form';
 import { calculateNewValue } from "@testing-library/user-event/dist/utils";
 
-const Register = () => {
+const Register = ({setToken}) => {
 
     const navigate = useNavigate();
 
     const [failText, setFailText] = useState(null);
-    const [userData, setUserData] = useState();
+    //const [userData, setUserData] = useState();
 
     const form = useForm({
         initialValues: {
@@ -29,63 +29,56 @@ const Register = () => {
         }
     })
 
-    //erhält Liste mit UserDaten aus der data.json
-    useEffect(() => {
-        fetch('http://localhost:8000/users') 
+    const handleSubmit = async (values) => {
+        fetch('http://localhost:8080/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: values.username,
+                email: values.email,
+                password: values.password,
+            }),
+        })
         .then(response => {
             if (!response.ok) {
-            throw new Error('Network response was not ok')
+                throw new Error('Network response was not ok')
             }
             return response.json()
         })
-        .then(data => setUserData(data))
-        .catch(error => console.error('Error fetching data:', error))
-    }, [])
-
-    const handleSubmit = async (values) => {
-        try {
-            const response = await fetch("http://localhost:8000/users", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: values.username,
-                    email: values.email,
-                    password: values.password
-                })
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-        } catch (error) {
-            console.error("Error posting wish:", error);
-        }
+        .then(data => {
+            setToken(data.token)
+            navigate('/meineWuensche')
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error)
+        })
     }
 
-    function registerFunction (values) {
-        const EmailInUse = userData.find((user) => user.email === values.email);
-        const ExistingUsername = userData.find((user) => user.username === values.username);
-        const failPass = values.password != values.passwordCheck;
+    // function registerFunction (values) {
+    //     const EmailInUse = userData.find((user) => user.email === values.email);
+    //     const ExistingUsername = userData.find((user) => user.username === values.username);
+    //     const failPass = values.password != values.passwordCheck;
 
-        if (!EmailInUse && !ExistingUsername && !failPass) {
-            handleSubmit(values)
-            navigate(`/meineWuensche`)    
-            setFailText(null)
-        }
-        if(EmailInUse) {
-            setFailText("Die angegebene E-Mail ist bereits in Benutzung")
-            return
-        }
-        if(ExistingUsername) {
-            setFailText("Der Username ist bereits vergeben...")
-            return
-        }
-        if(failPass) {
-            setFailText("Das wiederholte Passwort ist falsch")
-            return
-        }
-    }
+    //     if (!EmailInUse && !ExistingUsername && !failPass) {
+    //         handleSubmit(values)
+    //         navigate(`/meineWuensche`)    
+    //         setFailText(null)
+    //     }
+    //     if(EmailInUse) {
+    //         setFailText("Die angegebene E-Mail ist bereits in Benutzung")
+    //         return
+    //     }
+    //     if(ExistingUsername) {
+    //         setFailText("Der Username ist bereits vergeben...")
+    //         return
+    //     }
+    //     if(failPass) {
+    //         setFailText("Das wiederholte Passwort ist falsch")
+    //         return
+    //     }
+    // }
 
     return (
         <Flex direction="column" h="100vh" w="100vw" justify="center" align="center" bg="#D5EAF5">
@@ -102,7 +95,7 @@ const Register = () => {
                         {failText}
                     </Text>
                 }
-                <form onSubmit={(form.onSubmit(registerFunction))}>
+                <form onSubmit={(form.onSubmit(handleSubmit))}>
                     <Flex w="30vw" justify="space-between" my={20}>
                         <Text fz={20} c="#5682B4">E-Mail:</Text>
                         <TextInput type="email" w="13vw" {...form.getInputProps("email")}/>

@@ -11,40 +11,42 @@ import Help from './components/help/Help';
 import { useEffect, useState } from 'react';
 import { useNavigate} from "react-router-dom";
 import { useUser } from "./UserContext";
-import AccountDetails from './AccountDetails/AccountDetails';
+import AccountDetails from './components/accountDetails/AccountDetails';
 
 function App() {
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [token, setToken] = useState();
+
   const { currentUser } = useUser();
 
   const [searchedUser, setSearchedUser] = useState()
 
   useEffect(() => {
-      if (!location.pathname.startsWith('/geschenkeFinden')) return;
-      
-      if (searchedUser != undefined) {
-          navigate(`/geschenkeFinden/${searchedUser?.id}`)
-          return;
-      }
-      navigate('/geschenkeFinden')
+    if (!location.pathname.startsWith('/geschenkeFinden')) return;
+    
+    if (searchedUser != undefined) {
+      navigate(`/geschenkeFinden/${searchedUser?.id}`)
+      return;
+    }
+    navigate('/geschenkeFinden')
   }, [searchedUser])
 
   useEffect(() => {
-    if(currentUser == null){
+    if(token == undefined){
       navigate('/login')
     }
-  }, [currentUser])
+  }, [token])
 
   return (
     <Box>
       {(!location.pathname.startsWith('/login') && !location.pathname.startsWith('/register')) && <Navbar/>}
       <Routes>
-        <Route path="/register" element={<Register />}/>
-        <Route path="/login" element={<Login />}/>
-        <Route path="/meineWuensche" element={<MyPresents />}/>
+        <Route path="/register" element={<Register setToken={setToken}/>}/>
+        <Route path="/login" element={<Login setToken={setToken}/>}/>
+        <Route path="/meineWuensche" element={<MyPresents token={token}/>}/>
         <Route path="/geschenkeFinden" element={<FindUser setSearchedUser={setSearchedUser}/>}/>
         <Route path="/geschenkeFinden/:userId" element={<FindPresent searchedUser={searchedUser}/>}/>
         <Route path="/help" element={<Help />}/>

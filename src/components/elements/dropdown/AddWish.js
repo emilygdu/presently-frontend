@@ -4,12 +4,26 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from "react";
 import { useUser } from "../../../UserContext";
 
-const AddWish = ({ onClose, onSuccess }) => {
+const AddWish = ({ onClose, onSuccess, token }) => {
 
-    const categoryData = ["Haushalt", "Kleidung", "Kosmetik", "Lebensmittel", "Spielzeug", "Sport", "Technik", "Sonstiges"]
-    const eventData = ["Geburtstag", "Hochzeit", "Weihnachten", "Ostern", "Abschluss"]
-
-    const { currentUser } = useUser();
+    const categorys = [
+        {name: "Haushalt", id: "HOME"},
+        {name: "Kleidung", id: "FASHION"},
+        {name: "Kosmetik", id: "BEAUTY"},
+        {name: "Lebensmittel", id: "FOOD"},
+        {name: "Reisen", id: "TRAVEL"},
+        {name: "Sport", id: "SPORT"},
+        {name: "Technik", id: "TECHNOLOGY"},
+        {name: "Sonstiges", id: "OTHER"}
+    ]
+    const events = [
+        {name: "Geburtstag", id: "BIRTHDAY"},
+        {name: "Hochzeit", id: "WEDDING"},
+        {name: "Weihnachten", id: "CHRISTMAS"},
+        {name: "Abschluss", id: "GRADUATION"}
+    ]
+    const categoryData = ["Haushalt", "Kleidung", "Kosmetik", "Lebensmittel", "Reisen", "Sport", "Technik", "Sonstiges"]
+    const eventData = ["Abschluss", "Geburtstag", "Hochzeit", "Weihnachten"]
 
     const [errors, setErrors] = useState({});
 
@@ -21,9 +35,6 @@ const AddWish = ({ onClose, onSuccess }) => {
     const [picture, setPicture] = useState("");
     const [favorit, setFavorit] = useState("");
 
-    const [wishCategory, setWishCategory] = useState();
-    const [wishEvent, setWishEvent] = useState();
-
     const validate = () => {
         const newErrors = {};
         if (!title) newErrors.title = "Titel ist erforderlich";
@@ -34,25 +45,6 @@ const AddWish = ({ onClose, onSuccess }) => {
         return newErrors;
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("http://localhost:8000/categories")
-                const response2 = await fetch("http://localhost:8000/events")
-                if (!response.ok || !response2.ok) {
-                    throw new Error('Network response was not ok')
-                }
-                const data = await response.json()
-                const data2 = await response2.json()
-                setWishCategory(data)
-                setWishEvent(data2)
-            } catch (error) {
-                console.error(`Error fetching url:`, error)
-            }
-        }
-        fetchData()
-    }, [])
-
     const handleSubmit = async () => {
         const newErrors = validate();
         if (Object.keys(newErrors).length > 0) {
@@ -60,21 +52,21 @@ const AddWish = ({ onClose, onSuccess }) => {
             return;
         }
         try {
-            const response = await fetch("http://localhost:8000/wishes", {
+            const response = await fetch("http://localhost:8080/wishlist/items", {
                 method: "POST",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    fk_uid: currentUser,
-                    fk_cid: wishCategory?.find((c) => c.cname == category).cid,
-                    fk_eid: wishEvent?.find((e) => e.ename == event)?.eid ?? null,      
+                    productCategory: categorys?.find((c) => c.name == category).id,
+                    eventType: events?.find((e) => e.name == event)?.id ?? null,      
                     title: title,
                     price: parseFloat(price.toString().replace(',', '.')),
-                    isFavorit: favorit,
-                    bought: false,
-                    picture: picture,
-                    url: link
+                    isFavorite: favorit,
+                    isBought: false,
+                    imageUrl: picture,
+                    productUrl: link
                 })
             });
             if (!response.ok) {
