@@ -8,8 +8,8 @@ const PriceFilter = ({addFilter, minPrice, maxPrice, priceRange, setPriceRange})
                 Preis
             </Text>
             <RangeSlider onChange={(value) => {
-                            addFilter("Preis", `${value[0]}€ - ${value[1]}€`);
                             setPriceRange(value);
+                            addFilter("Preis", `${value[0]}€ - ${value[1]}€`);
                          }}
                          color="#5682B4" value={priceRange} 
                          min={minPrice} max={maxPrice} labelAlwaysOn  

@@ -98,8 +98,8 @@ const EditWish = ({ wish, onClose, onSuccess, token }) => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            onSuccess()
             onClose()
+            onSuccess()
         } catch (error) {
             console.error("Error posting wish:", error);
         }

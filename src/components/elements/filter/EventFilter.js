@@ -1,7 +1,7 @@
 import { Flex, Text, Badge } from "@mantine/core";
 import { useState, useEffect } from "react";
 
-const EventFilter = ({wishes, addFilter, filterList}) => {
+const EventFilter = ({wishes, wishesWithoutFilter, addFilter, filterList}) => {
 
     const events = [
         {name: "Geburtstag", id: "BIRTHDAY"},
@@ -27,7 +27,7 @@ const EventFilter = ({wishes, addFilter, filterList}) => {
                             <Badge fz={10} w={30} bg="#F5F4D7" c="#5682B4"
                                     styles={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                             >
-                                {wishes?.filter((w) => w.eventType == event.id).length}
+                                {wishesWithoutFilter?.filter((w) => w.eventType == event.id).length}
                             </Badge>
                         </Flex>
                     )}

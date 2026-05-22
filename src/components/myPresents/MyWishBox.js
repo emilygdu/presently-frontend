@@ -45,11 +45,11 @@ const MyWishBox = ({wish, onSuccess, token}) => {
                     </Flex>
                     <Flex c="#5682B4" align="end" justify="space-between" h="10vh" px={10} mb={10}>
                         <Text align="center">{wish.isFavorite ? <StarIcon sx={{ fontSize: 30 }} /> : ""}</Text>
-                        <Button component="a" href={wish.productUrl} target="_blank" c="#D5EAF5"  fz={18} radius={20} w="7.5vw" ta="center" bg="#5682B4">{formatPrice(wish.price)} €</Button>
+                        <Button component="a" href={wish.productUrl} target="_blank" c="#D5EAF5" fz={18} radius={20} px={15} ta="center" bg="#5682B4">{formatPrice(wish.price)} €</Button>
                     </Flex>
                 </Flex>
             </Popover.Target>
-            <Popover.Dropdown style={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            <Popover.Dropdown style={{position: "fixed", top: "55%", left: "50%", transform: "translate(-50%, -50%)",
                                         border: "7px solid #5682B4", backgroundColor: "#FEFDE5", borderRadius: 12, padding: 20}}>
                 <EditWish wish={wish} onClose={() => setOpened(false)} onSuccess={onSuccess} token={token}/>
             </Popover.Dropdown>

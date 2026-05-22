@@ -1,6 +1,5 @@
 import { Flex, Box, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
-import SortDropDown from "../elements/SortDropDown";
 import FilterBox from "../elements/FilterBox";
 import FilterList from "../elements/FilterList";
 import Wishlist from "./Wishlist";
@@ -33,8 +32,7 @@ const FindPresent = ({searchedUser}) => {
                 <Flex justify="space-between">
                     <Text c="#5682B4" size="40px" mb={20}>
                         Wünsche von {searchedUser?.username}:
-                    </Text> 
-                    <SortDropDown />   
+                    </Text>  
                 </Flex>
                 {filterList.length > 0 && <FilterList filterList={filterList}/>}
                 <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser}/>

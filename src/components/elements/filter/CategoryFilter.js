@@ -1,7 +1,7 @@
 import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
 
-const CategoryFilter = ({wishes, addFilter, filterList}) => {
+const CategoryFilter = ({wishes, wishesWithoutFilter, addFilter, filterList}) => {
 
     const categorys = [
         {name: "Haushalt", id: "HOME"},
@@ -30,7 +30,7 @@ const CategoryFilter = ({wishes, addFilter, filterList}) => {
                             <Badge fz={10} w={30} bg="#F5F4D7" c="#5682B4"
                                    styles={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                             >
-                                {wishes?.filter((w) => w.productCategory == category.id).length}
+                                {wishesWithoutFilter?.filter((w) => w.productCategory == category.id).length}
                             </Badge>
                         </Flex>
                     </Grid.Col>

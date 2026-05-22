@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 
-const AccountDetails = () => {
+const AccountDetails = ({token, setToken}) => {
 
     const navigate = useNavigate()
 
@@ -30,14 +30,19 @@ const AccountDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/users/${currentUser}`)
+                const response = await fetch(`http://localhost:8080/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
                 }
                 const data = await response.json()
                 setEmail(data.email)
                 setUsername(data.username)
-                setPassword(data.password)
             } catch (error) {
                 console.error(`Error fetching url:`, error)
             }
@@ -85,7 +90,7 @@ const AccountDetails = () => {
                     <InputRow title="Passwort" inputType="password" value={password} onChange={setPassword} error={errors.password}/>
                     <Flex w="100%" justify="space-between" mt={10}>
                         <Button w="49%" h={40} bg="#F5F4D7" c="#5682B4" fz="18px"
-                                leftSection={<LogoutIcon />} onClick={() => setCurrentUser()}
+                                leftSection={<LogoutIcon />} onClick={() => setToken()}
                         >
                             Ausloggen
                         </Button>

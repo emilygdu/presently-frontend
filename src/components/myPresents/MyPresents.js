@@ -1,15 +1,17 @@
 import { Box, Flex, Text } from "@mantine/core";
 import MyWishlist from "./MyWishlist";
-import SortDropDown from "../elements/SortDropDown";
 import FilterBox from "../elements/FilterBox";
 import { useState, useEffect } from "react";
 import FilterList from "../elements/FilterList";
 import { useUser } from "../../UserContext";
+import { useRef } from "react";
 
 const MyPresents = ({token}) => {
 
     const [wishes, setWishes] = useState();
+    const [wishesWithoutFilter, setWishesWithoutFilter] = useState();
     const [filterList, setFilterList] = useState([]);
+    const wishesWithoutFilterSet = useRef(false);
 
     const fetchData = async () => {
         try {
@@ -36,7 +38,10 @@ const MyPresents = ({token}) => {
                 throw new Error('Network response was not ok')
             }
             const data = await response.json()
-            console.log(params.toString())
+            if (!params.toString() && !wishesWithoutFilterSet.current) {
+                setWishesWithoutFilter(data)
+                wishesWithoutFilterSet.current = true;
+            }
             setWishes(data)
         } catch (error) {
             console.error(`Error fetching url:`, error)
@@ -58,12 +63,11 @@ const MyPresents = ({token}) => {
                     <Text c="#5682B4" size="40px" mb={20}>
                         Meine Wünsche:
                     </Text> 
-                    <SortDropDown />   
                 </Flex>
                 {filterList.length > 0 && <FilterList filterList={filterList}/>}
                 <MyWishlist wishes={wishes} onSuccess={fetchData} token={token}/>
             </Box>
-            <FilterBox wishes={wishes} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true"/>
+            <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true"/>
         </Flex>
     );
 }

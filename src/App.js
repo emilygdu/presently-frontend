@@ -50,7 +50,7 @@ function App() {
         <Route path="/geschenkeFinden" element={<FindUser setSearchedUser={setSearchedUser}/>}/>
         <Route path="/geschenkeFinden/:userId" element={<FindPresent searchedUser={searchedUser}/>}/>
         <Route path="/help" element={<Help />}/>
-        <Route path="/accountDetails" element={<AccountDetails />}/>
+        <Route path="/accountDetails" element={<AccountDetails token={token} setToken={setToken}/>}/>
       </Routes>
     </Box>
   );
