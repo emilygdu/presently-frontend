@@ -16,11 +16,29 @@ const MyPresents = ({token}) => {
     const fetchData = async () => {
         try {
             const params = new URLSearchParams()
+            const categoryCount = filterList.filter(filter => filter.filterName == "Kategorie").length
         
             filterList?.forEach(filter => {
-                if (filter.filterName === 'Kategorie' || filter.filterName === 'Event') {
-                    params.append(filter.filterName == "Event" ? "eventType" : "category", filter.filterValueID)
+                if (filter.filterName === 'Kategorie') {
+                    categoryCount > 1 ? params.append("categories", filter.filterValueID) : params.append("category", filter.filterValueID)
                 }
+                if (filter.filterName === "Event"){
+                    params.append("eventType", filter.filterValueID)
+                }
+                if (filter.filterName === 'Titel') {
+                    params.append("title", filter.filterValue)
+                }
+                if (filter.filterName === "Preis") {
+                    const parts = (filter.filterValue).split(" - ");
+                    const minPrice = parseInt(parts[0]);
+                    const maxPrice = parseInt(parts[1]);
+                    params.append("minPrice", minPrice)
+                    params.append("maxPrice", maxPrice)
+                }
+                if (filter.filterValueID == 'FAVORITE'){
+                    params.append("isFavorite", "true")
+                }
+                console.log(params.toString())
             })
 
             const url = params.toString() 
@@ -53,8 +71,6 @@ const MyPresents = ({token}) => {
             fetchData()
         }
     }, [token, filterList])
-
-    console.log(token)
 
     return (  
         <Flex justify="space-between" h="100%">

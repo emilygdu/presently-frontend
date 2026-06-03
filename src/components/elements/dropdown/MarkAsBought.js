@@ -1,26 +1,16 @@
 import { Flex, Title, Button, Text } from "@mantine/core";
 import SellIcon from '@mui/icons-material/Sell';
 
-const MarkAsBought = ({wish, searchedUser, onClose, onSuccess}) => {
+const MarkAsBought = ({wish, searchedUser, onClose, onSuccess, token}) => {
 
     const handleSubmit = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/wishes/${id}`, {
+            const response = await fetch(`http://localhost:8080/wishlist/items/${id}/bought`, {
                 method: "PUT",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    fk_uid: wish.fk_uid, //anpassen bei backend implement
-                    fk_cid: wish.fk_cid,
-                    fk_eid: wish.fk_eid ? wish.fk_eid : null,      
-                    title: wish.title,
-                    price: wish.price,
-                    isFavorit: wish.isFavorit,
-                    bought: true,
-                    picture: wish.picture,
-                    url: wish.url
-                })
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');

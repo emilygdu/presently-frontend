@@ -1,30 +1,74 @@
 import { Flex, Box, Text } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FilterBox from "../elements/FilterBox";
 import FilterList from "../elements/FilterList";
 import Wishlist from "./Wishlist";
 
-const FindPresent = ({searchedUser}) => {
+const FindPresent = ({searchedUser, token}) => {
 
     const [wishes, setWishes] = useState();
+    const [wishesWithoutFilter, setWishesWithoutFilter] = useState();
     const [filterList, setFilterList] = useState([]);
+    const wishesWithoutFilterSet = useRef(false);
 
     const fetchData = async () => {
         try {
-            const response = await fetch("http://localhost:8000/wishes")
+            const params = new URLSearchParams()
+            const categoryCount = filterList.filter(filter => filter.filterName == "Kategorie").length
+        
+            filterList?.forEach(filter => {
+                if (filter.filterName === 'Kategorie') {
+                    categoryCount > 1 ? params.append("categories", filter.filterValueID) : params.append("category", filter.filterValueID)
+                }
+                if (filter.filterName === "Event"){
+                    params.append("eventType", filter.filterValueID)
+                }
+                if (filter.filterName === 'Titel') {
+                    params.append("title", filter.filterValue)
+                }
+                if (filter.filterName === "Preis") {
+                    const parts = (filter.filterValue).split(" - ");
+                    const minPrice = parseInt(parts[0]);
+                    const maxPrice = parseInt(parts[1]);
+                    params.append("minPrice", minPrice)
+                    params.append("maxPrice", maxPrice)
+                }
+                if (filter.filterValueID == 'FAVORITE'){
+                    params.append("isFavorite", "true")
+                }
+                console.log(params.toString())
+            })
+
+            const url = params.toString() 
+                ? `http://localhost:8080/users/${searchedUser.id}/wishlist?${params.toString()}`
+                : `http://localhost:8080/users/${searchedUser.id}/wishlist`
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
             if (!response.ok) {
                 throw new Error('Network response was not ok')
             }
             const data = await response.json()
-            setWishes(data.filter((wish) => wish.fk_uid == searchedUser.id))
+            if (!params.toString() && !wishesWithoutFilterSet.current) {
+                setWishesWithoutFilter(data)
+                wishesWithoutFilterSet.current = true;
+            }
+            setWishes(data)
         } catch (error) {
             console.error(`Error fetching url:`, error)
         }
     }
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        if (token) {
+            fetchData()
+        }
+    }, [token, filterList])
 
     return (  
         <Flex justify="space-between" h="100%">
@@ -35,9 +79,9 @@ const FindPresent = ({searchedUser}) => {
                     </Text>  
                 </Flex>
                 {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser}/>
+                <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser} token={token}/>
             </Box>
-            <FilterBox wishes={wishes} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} user={searchedUser?.id}/>
+            <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList}/>
         </Flex>
     );
 }

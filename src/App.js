@@ -20,8 +20,6 @@ function App() {
 
   const [token, setToken] = useState();
 
-  const { currentUser } = useUser();
-
   const [searchedUser, setSearchedUser] = useState()
 
   useEffect(() => {
@@ -47,8 +45,8 @@ function App() {
         <Route path="/register" element={<Register setToken={setToken}/>}/>
         <Route path="/login" element={<Login setToken={setToken}/>}/>
         <Route path="/meineWuensche" element={<MyPresents token={token}/>}/>
-        <Route path="/geschenkeFinden" element={<FindUser setSearchedUser={setSearchedUser}/>}/>
-        <Route path="/geschenkeFinden/:userId" element={<FindPresent searchedUser={searchedUser}/>}/>
+        <Route path="/geschenkeFinden" element={<FindUser setSearchedUser={setSearchedUser} token={token}/>}/>
+        <Route path="/geschenkeFinden/:userId" element={<FindPresent searchedUser={searchedUser} token={token}/>}/>
         <Route path="/help" element={<Help />}/>
         <Route path="/accountDetails" element={<AccountDetails token={token} setToken={setToken}/>}/>
       </Routes>

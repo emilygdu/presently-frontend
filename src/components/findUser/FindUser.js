@@ -3,21 +3,48 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useState, useEffect } from "react";
 import { useUser } from "../../UserContext";
 
-const FindUser = ({ setSearchedUser}) => {
+const FindUser = ({ setSearchedUser, token }) => {
 
     const [search, setSearch] = useState("");
     const [userList, setUserList] = useState();
-
-    const { currentUser } = useUser();
+    const [currentUserId, setCurrentUserId] = useState("");
 
     const filtered = userList?.filter(user =>
-        (user.username.toLowerCase().includes(search.toLowerCase()) || user.email.toLowerCase().includes(search.toLowerCase())) && user.id != currentUser
+        (user.username.toLowerCase().includes(search.toLowerCase()) || user.email.toLowerCase().includes(search.toLowerCase())) && user.id != currentUserId
     );
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://localhost:8000/users")
+                const response = await fetch(`http://localhost:8080/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                const data = await response.json()
+                setCurrentUserId(data.id)
+            } catch (error) {
+                console.error(`Error fetching url:`, error)
+            }
+        }
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("http://localhost:8080/users", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
                 }
