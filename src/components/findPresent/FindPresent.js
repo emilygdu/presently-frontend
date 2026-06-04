@@ -79,7 +79,7 @@ const FindPresent = ({searchedUser, token}) => {
                     </Text>  
                 </Flex>
                 {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser} token={token}/>
+                <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser} token={token} filterList={filterList}/>
             </Box>
             <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList}/>
         </Flex>
