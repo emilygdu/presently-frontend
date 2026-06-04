@@ -5,7 +5,7 @@ const MarkAsBought = ({wish, searchedUser, onClose, onSuccess, token}) => {
 
     const handleSubmit = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/wishlist/items/${id}/bought`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/wishlist/items/${id}/bought`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${token}`,

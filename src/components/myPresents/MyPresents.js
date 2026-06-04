@@ -42,8 +42,8 @@ const MyPresents = ({token}) => {
             })
 
             const url = params.toString() 
-                ? `http://localhost:8080/wishlist/items?${params.toString()}`
-                : `http://localhost:8080/wishlist/items`
+                ? `${process.env.REACT_APP_API_URL}/wishlist/items?${params.toString()}`
+                : `${process.env.REACT_APP_API_URL}/wishlist/items`
 
             const response = await fetch(url, {
                 method: 'GET',

@@ -52,7 +52,7 @@ const AddWish = ({ onClose, onSuccess, token }) => {
             return;
         }
         try {
-            const response = await fetch("http://localhost:8080/wishlist/items", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/wishlist/items`, {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -16,7 +16,7 @@ const FindUser = ({ setSearchedUser, token }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/users/me`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/users/me`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -38,7 +38,7 @@ const FindUser = ({ setSearchedUser, token }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://localhost:8080/users", {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

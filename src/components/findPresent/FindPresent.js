@@ -40,8 +40,8 @@ const FindPresent = ({searchedUser, token}) => {
             })
 
             const url = params.toString() 
-                ? `http://localhost:8080/users/${searchedUser.id}/wishlist?${params.toString()}`
-                : `http://localhost:8080/users/${searchedUser.id}/wishlist`
+                ? `${process.env.REACT_APP_API_URL}/users/${searchedUser.id}/wishlist?${params.toString()}`
+                : `${process.env.REACT_APP_API_URL}/users/${searchedUser.id}/wishlist`
 
             const response = await fetch(url, {
                 method: 'GET',

@@ -54,7 +54,7 @@ const EditWish = ({ wish, onClose, onSuccess, token }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/wishlist/items/${id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/wishlist/items/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ const EditWish = ({ wish, onClose, onSuccess, token }) => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8080/wishlist/items/${id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/wishlist/items/${id}`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${token}`,

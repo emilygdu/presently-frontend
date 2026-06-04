@@ -27,7 +27,7 @@ const Login = ({setToken}) => {
 
     //Funktionalität, die bei Versuch des einloggens ausgeführt wird
     function loginFunction (values) {
-        fetch('http://localhost:8080/auth/login', {
+        fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
