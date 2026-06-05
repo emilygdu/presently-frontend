@@ -77,6 +77,19 @@ const EditWish = ({ wish, onClose, onSuccess, token }) => {
             setErrors(newErrors);
             return;
         }
+        const payload = {
+            productCategory: categorys?.find((c) => c.name == category).id,
+            eventType: events?.find((e) => e.name == event)?.id ?? null,      
+            title: title,
+            price: parseFloat(price.toString().replace(',', '.')),
+            isFavorite: favorit,
+            isBought: false,
+            imageUrl: picture,
+            productUrl: link
+        };
+
+        console.log("Payload:", payload);
+        console.log("Token:", token);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/wishlist/items/${id}`, {
                 method: "PUT",

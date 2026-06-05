@@ -13,8 +13,6 @@ const CategoryFilter = ({wishes, wishesWithoutFilter, addFilter, filterList}) =>
         {name: "Technik", id: "TECHNOLOGY"},
         {name: "Sonstiges", id: "OTHER"}
     ]
-    
-    console.log(wishes)
 
     return (  
         <Flex direction="column" mb={20}>

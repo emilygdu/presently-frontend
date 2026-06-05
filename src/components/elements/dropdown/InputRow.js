@@ -8,7 +8,7 @@ const InputRow = ({title, inputType, selectData, value, onChange, error}) => {
         <Flex w="100%" my={10} align="center" justify="space-between">
             <Text c="#5682B4" fz={25}>{title}:</Text>
             {inputType == "text" && 
-                <TextInput w="50%" placeholder="eingeben..."
+                <TextInput w="50%" placeholder={title == "Bild" ? "Bildlink eingeben..." : `${title.replace("*", "")} eingeben...`}
                     rightSection={<CreateIcon style={{ color: '#5682B4' }}/>} 
                     value={value} onChange={(e) => onChange(e.target.value)}
                     styles={{
@@ -25,7 +25,7 @@ const InputRow = ({title, inputType, selectData, value, onChange, error}) => {
                 />
             }
             {inputType == "password" && 
-                <PasswordInput w="50%" placeholder="eingeben..."
+                <PasswordInput w="50%" placeholder={`${title.replace("*", "")} eingeben...`}
                     value={value} onChange={(e) => onChange(e.target.value)}
                     styles={{
                         input: {
@@ -41,7 +41,7 @@ const InputRow = ({title, inputType, selectData, value, onChange, error}) => {
                 />
             }
             {inputType == "select" && 
-                <Select w="50%" placeholder="wählen..."
+                <Select w="50%" placeholder={`${title.replace("*", "")} wählen...`}
                         comboboxProps={{ withinPortal: false }}
                         data={selectData}
                         rightSection={<ExpandMoreIcon style={{ color: '#5682B4' }}/>} 

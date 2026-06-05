@@ -11,7 +11,6 @@ const MyPresents = ({token}) => {
     const [wishes, setWishes] = useState();
     const [wishesWithoutFilter, setWishesWithoutFilter] = useState();
     const [filterList, setFilterList] = useState([]);
-    const wishesWithoutFilterSet = useRef(false);
 
     const fetchData = async () => {
         try {
@@ -52,15 +51,20 @@ const MyPresents = ({token}) => {
                     'Content-Type': 'application/json',
                 },
             })
+            const response2 = await fetch (`${process.env.REACT_APP_API_URL}/wishlist/items`,{
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
             if (!response.ok) {
                 throw new Error('Network response was not ok')
             }
             const data = await response.json()
-            if (!params.toString() && !wishesWithoutFilterSet.current) {
-                setWishesWithoutFilter(data)
-                wishesWithoutFilterSet.current = true;
-            }
+            const data2 = await response2.json()
             setWishes(data)
+            setWishesWithoutFilter(data2)
         } catch (error) {
             console.error(`Error fetching url:`, error)
         }
