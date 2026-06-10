@@ -1,4 +1,4 @@
-import { Flex, Box, Text } from "@mantine/core";
+import { Flex, Box, Text, Loader } from "@mantine/core";
 import { useState, useEffect, useRef } from "react";
 import FilterBox from "../elements/FilterBox";
 import FilterList from "../elements/FilterList";
@@ -6,12 +6,14 @@ import Wishlist from "./Wishlist";
 
 const FindPresent = ({searchedUser, token}) => {
 
+    const [loading, setLoading] = useState(false)
     const [wishes, setWishes] = useState();
     const [wishesWithoutFilter, setWishesWithoutFilter] = useState();
     const [filterList, setFilterList] = useState([]);
     const wishesWithoutFilterSet = useRef(false);
 
     const fetchData = async () => {
+        setLoading(true)
         try {
             const params = new URLSearchParams()
             const categoryCount = filterList.filter(filter => filter.filterName == "Kategorie").length
@@ -61,6 +63,8 @@ const FindPresent = ({searchedUser, token}) => {
             setWishes(data)
         } catch (error) {
             console.error(`Error fetching url:`, error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -78,8 +82,16 @@ const FindPresent = ({searchedUser, token}) => {
                         Wünsche von {searchedUser?.username}:
                     </Text>  
                 </Flex>
-                {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser} token={token} filterList={filterList}/>
+                {loading ?
+                    <Flex h="90%" justify="center" align="center">
+                        <Loader size={50} color="#5682B4" type="bars"></Loader>
+                    </Flex>
+                :
+                    <>
+                        {filterList.length > 0 && <FilterList filterList={filterList}/>}
+                        <Wishlist wishes={wishes} onSuccess={fetchData} searchedUser={searchedUser} token={token} filterList={filterList}/>
+                    </>
+                }
             </Box>
             <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList}/>
         </Flex>

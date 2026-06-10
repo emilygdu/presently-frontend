@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@mantine/core";
+import { Box, Flex, Loader, Text } from "@mantine/core";
 import MyWishlist from "./MyWishlist";
 import FilterBox from "../elements/FilterBox";
 import { useState, useEffect } from "react";
@@ -8,11 +8,13 @@ import { useRef } from "react";
 
 const MyPresents = ({token}) => {
 
+    const [loading, setLoading] = useState(false);
     const [wishes, setWishes] = useState();
     const [wishesWithoutFilter, setWishesWithoutFilter] = useState();
     const [filterList, setFilterList] = useState([]);
 
     const fetchData = async () => {
+        setLoading(true)
         try {
             const params = new URLSearchParams()
             const categoryCount = filterList.filter(filter => filter.filterName == "Kategorie").length
@@ -67,6 +69,8 @@ const MyPresents = ({token}) => {
             setWishesWithoutFilter(data2)
         } catch (error) {
             console.error(`Error fetching url:`, error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -84,8 +88,16 @@ const MyPresents = ({token}) => {
                         Meine Wünsche:
                     </Text> 
                 </Flex>
-                {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                <MyWishlist wishes={wishes} onSuccess={fetchData} token={token} filterList={filterList} />
+                {loading ?
+                    <Flex h="90%" justify="center" align="center">
+                        <Loader size={50} color="#5682B4" type="bars"></Loader>
+                    </Flex>
+                :
+                    <>
+                        {filterList.length > 0 && <FilterList filterList={filterList}/>}
+                        <MyWishlist wishes={wishes} onSuccess={fetchData} token={token} filterList={filterList} />
+                    </>
+                }
             </Box>
             <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true"/>
         </Flex>

@@ -20,15 +20,31 @@ const FilterBox = ({wishes, wishesWithoutFilter, token, onSuccess, filterList, s
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(500);
 
+    console.log(filterList)
+
     useEffect(() => {
         if (wishesWithoutFilter && wishesWithoutFilter.length > 0) {
             const min = Math.min(...wishesWithoutFilter.map((wish) => wish.price));
             const max = Math.max(...wishesWithoutFilter.map((wish) => wish.price));
             setMinPrice(min);
             setMaxPrice(max);
-            setPriceRange([min, max]);
         }
     }, [wishesWithoutFilter]);
+
+    useEffect(() => {
+        if (wishes && wishes.length > 0) {
+            if (filterList.find((fl) => fl.filterName == "Preis")){
+                const filterValue = filterList.find((fl) => fl.filterName == "Preis").filterValue  // ← .filterValue
+                const [min, max] = filterValue.replace(/€/g, "").split(" - ").map(Number)
+                setPriceRange([min, max]);
+            }
+            else{
+                const min = Math.min(...wishes.map((wish) => wish.price));
+                const max = Math.max(...wishes.map((wish) => wish.price));
+                setPriceRange([min, max]);
+            }
+        }
+    }, [wishes]);
 
     const addFilter = (name, value, valueID) => {
         if (name == "Preis" || name == "Titel"){
