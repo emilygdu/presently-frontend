@@ -20,8 +20,6 @@ const FilterBox = ({wishes, wishesWithoutFilter, token, onSuccess, filterList, s
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(500);
 
-    console.log(filterList)
-
     useEffect(() => {
         if (wishesWithoutFilter && wishesWithoutFilter.length > 0) {
             const min = Math.min(...wishesWithoutFilter.map((wish) => wish.price));
@@ -68,7 +66,7 @@ const FilterBox = ({wishes, wishesWithoutFilter, token, onSuccess, filterList, s
     }
 
     return (  
-        <Box w="23vw" h="90vh" bg="#D5EAF5" px="30px" py="15px" style={{ position: "sticky", top: "10vh", alignSelf: "flex-start" }}>
+        <Box w="23vw" h="90vh" bg="#D5EAF5" px="30px" py="10px" style={{ position: "sticky", top: "10vh", alignSelf: "flex-start" }}>
             <CategoryFilter wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} addFilter={addFilter} filterList={filterList} />
             <Divider size={2} color="#5682B4"/>
             <EventFilter wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} addFilter={addFilter} filterList={filterList} />

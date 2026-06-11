@@ -11,8 +11,8 @@ const EventFilter = ({wishes, wishesWithoutFilter, addFilter, filterList}) => {
     ]
 
     return (  
-        <Flex direction="column">
-            <Text c="#5682B4" fz={17} fw={700} mb={10} style={{cursor: "default"}}>
+        <Flex direction="column" h="22vh">
+            <Text c="#5682B4" fz={17} fw={700} mb={5} style={{cursor: "default"}}>
                 Events
             </Text>
             <Flex  justify="center">

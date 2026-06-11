@@ -15,7 +15,7 @@ const CategoryFilter = ({wishes, wishesWithoutFilter, addFilter, filterList}) =>
     ]
 
     return (  
-        <Flex direction="column" mb={20}>
+        <Flex direction="column" mb={20} h="18vh">
             <Text c="#5682B4" fz={17} fw={700} mb={10} style={{cursor: "default"}}>
                 Kategorien
             </Text>

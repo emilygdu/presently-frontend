@@ -88,15 +88,13 @@ const MyPresents = ({token}) => {
                         Meine Wünsche:
                     </Text> 
                 </Flex>
+                {filterList.length > 0 && <FilterList filterList={filterList}/>}
                 {loading ?
-                    <Flex h="90%" justify="center" align="center">
+                    <Flex h="80%" justify="center" align="center">
                         <Loader size={50} color="#5682B4" type="bars"></Loader>
                     </Flex>
                 :
-                    <>
-                        {filterList.length > 0 && <FilterList filterList={filterList}/>}
-                        <MyWishlist wishes={wishes} onSuccess={fetchData} token={token} filterList={filterList} />
-                    </>
+                    <MyWishlist wishes={wishes} onSuccess={fetchData} token={token} filterList={filterList} />
                 }
             </Box>
             <FilterBox wishes={wishes} wishesWithoutFilter={wishesWithoutFilter} token={token} onSuccess={fetchData} filterList={filterList} setFilterList={setFilterList} owner="true"/>
